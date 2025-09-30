@@ -37,14 +37,39 @@ export const authApi = {
     const response = await api.post('/auth/login', { email, password });
     return response.data;
   },
-  
+
+  signup: async (data: {
+    email: string;
+    password: string;
+    full_name: string;
+    company_name?: string;
+  }) => {
+    const response = await api.post('/auth/signup', data);
+    return response.data;
+  },
+
   logout: async () => {
     await api.post('/auth/logout');
     localStorage.removeItem('auth_token');
   },
-  
+
   getCurrentUser: async () => {
     const response = await api.get('/auth/me');
+    return response.data;
+  },
+
+  refreshToken: async (refreshToken: string) => {
+    const response = await api.post('/auth/refresh-token', { refresh_token: refreshToken });
+    return response.data;
+  },
+
+  forgotPassword: async (email: string) => {
+    const response = await api.post('/auth/forgot-password', { email });
+    return response.data;
+  },
+
+  resetPassword: async (token: string, password: string) => {
+    const response = await api.post('/auth/reset-password', { token, password });
     return response.data;
   },
 };
@@ -282,6 +307,46 @@ export const dashboardApi = {
 
   getTeamMetrics: async (teamId: number) => {
     const response = await api.get(`/dashboard/metrics/${teamId}`);
+    return response.data;
+  },
+};
+
+// Billing API
+export const billingApi = {
+  createCheckoutSession: async (data: {
+    plan_id: string;
+    billing_cycle: 'monthly' | 'yearly';
+    success_url: string;
+    cancel_url: string;
+  }) => {
+    const response = await api.post('/billing/create-checkout-session', data);
+    return response.data;
+  },
+
+  createPortalSession: async (returnUrl: string) => {
+    const response = await api.post('/billing/create-portal-session', {
+      return_url: returnUrl,
+    });
+    return response.data;
+  },
+
+  getSubscription: async () => {
+    const response = await api.get('/billing/subscription');
+    return response.data;
+  },
+
+  cancelSubscription: async () => {
+    const response = await api.post('/billing/cancel-subscription');
+    return response.data;
+  },
+
+  getInvoices: async () => {
+    const response = await api.get('/billing/invoices');
+    return response.data;
+  },
+
+  getUsage: async () => {
+    const response = await api.get('/billing/usage');
     return response.data;
   },
 };
