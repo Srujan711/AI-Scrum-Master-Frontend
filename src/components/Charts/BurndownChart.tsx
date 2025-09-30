@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,7 +10,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { sprintApi } from '../../services/api';
+import { useBurndownData } from '../../hooks/useSprints';
 
 ChartJS.register(
   CategoryScale,
@@ -37,23 +37,7 @@ interface BurndownData {
 }
 
 export const BurndownChart: React.FC<Props> = ({ sprintId }) => {
-  const [data, setData] = useState<BurndownData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchBurndownData = async () => {
-      try {
-        const burndownData = await sprintApi.getBurndownData(sprintId);
-        setData(burndownData);
-      } catch (error) {
-        console.error('Failed to fetch burndown data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBurndownData();
-  }, [sprintId]);
+  const { data, isLoading: loading, isError } = useBurndownData(sprintId);
 
   if (loading) {
     return (
@@ -63,7 +47,7 @@ export const BurndownChart: React.FC<Props> = ({ sprintId }) => {
     );
   }
 
-  if (!data) {
+  if (isError || !data) {
     return (
       <div className="h-64 flex items-center justify-center text-gray-500">
         Failed to load burndown data
