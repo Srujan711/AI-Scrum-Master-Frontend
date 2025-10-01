@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useNavigate } from 'react-router-dom';
 import { authApi } from '../services/api';
 import { User } from '../types';
+import { useTeamStore } from '../stores/teamStore';
 
 interface SignupData {
   email: string;
@@ -34,6 +35,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const { setCurrentTeam } = useTeamStore();
 
   // Auto-refresh token before expiry
   useEffect(() => {
@@ -68,6 +70,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         const userData = await authApi.getCurrentUser();
         setUser(userData);
+
+        // Auto-select first team if available
+        if (userData.teams && userData.teams.length > 0) {
+          const firstTeam = userData.teams[0];
+          setCurrentTeam({
+            id: firstTeam.id,
+            name: firstTeam.name,
+            is_active: firstTeam.is_active,
+            // Add other required Team fields with defaults
+            description: '',
+            standup_time: '09:00',
+            standup_days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+            sprint_length: 14,
+            ai_enabled: true,
+            auto_standup: true,
+            auto_backlog_grooming: false
+          });
+        }
       } catch (error) {
         console.error('Failed to load user:', error);
         // Clear invalid token

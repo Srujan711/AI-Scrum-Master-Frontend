@@ -9,7 +9,7 @@ import { BacklogManager } from './components/Backlog/BacklogManager';
 import { SprintPlanner } from './components/Sprints/SprintPlanner';
 import { IntegrationSettings } from './components/Settings/IntegrationSettings';
 import { LoginPage } from './components/Auth/LoginPage';
-import './App.css';
+// import './App.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {

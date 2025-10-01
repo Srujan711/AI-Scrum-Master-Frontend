@@ -5,8 +5,15 @@ export interface User {
     is_active: boolean;
     is_scrum_master: boolean;
     is_product_owner: boolean;
-    preferences: Record<string, any>;
-    timezone: string;
+    preferences?: Record<string, any>;
+    timezone?: string;
+    subscription_tier?: string;
+    teams?: Array<{
+      id: number;
+      name: string;
+      role: string;
+      is_active: boolean;
+    }>;
   }
   
   export interface Team {

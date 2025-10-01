@@ -175,7 +175,7 @@ export const StandupGenerator: React.FC = () => {
           </div>
 
           {/* Action Items */}
-          {generatedStandup.action_items.length > 0 && (
+          {generatedStandup.action_items && generatedStandup.action_items.length > 0 && (
             <div className="mt-6">
               <h4 className="font-medium text-gray-900 mb-2">Action Items</h4>
               <div className="space-y-2">
