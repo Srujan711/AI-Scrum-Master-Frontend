@@ -59,23 +59,23 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       </header>
 
       {/* Navigation and Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex">
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-6 sm:py-8">
+        <div className="flex gap-8 xl:gap-12">
           {/* Sidebar Navigation */}
-          <nav className="w-64 mr-8">
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="space-y-2">
+          <nav className="hidden lg:block w-64 flex-shrink-0">
+            <div className="bg-white rounded-xl shadow-sm p-4 sticky top-6">
+              <div className="space-y-1">
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`flex items-center px-4 py-2 text-sm rounded-md transition-colors ${
+                    className={`flex items-center px-4 py-3 text-sm rounded-lg transition-all ${
                       isActive(item.href)
-                        ? 'bg-blue-100 text-blue-700 font-medium'
-                        : 'text-gray-700 hover:bg-gray-100'
+                        ? 'bg-blue-50 text-blue-700 font-semibold shadow-sm'
+                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                     }`}
                   >
-                    <span className="mr-3">{item.icon}</span>
+                    <span className="mr-3 text-lg">{item.icon}</span>
                     {item.name}
                   </Link>
                 ))}
@@ -84,8 +84,10 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           </nav>
 
           {/* Main Content */}
-          <main className="flex-1">
-            {children}
+          <main className="flex-1 min-w-0 max-w-full">
+            <div className="max-w-[1400px] mx-auto">
+              {children}
+            </div>
           </main>
         </div>
       </div>

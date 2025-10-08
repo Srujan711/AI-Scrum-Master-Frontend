@@ -30,55 +30,47 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white shadow rounded-lg p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Welcome back, {user?.full_name}
-            </h1>
-            <p className="text-gray-600 mt-1">
-              {currentTeam ? `Team: ${currentTeam.name}` : 'No team selected'}
-            </p>
-          </div>
-          {metrics && (
-            <div className="flex items-center space-x-6 text-sm">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{metrics.total_sprints || 0}</div>
-                <div className="text-gray-500">Sprints</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{metrics.completed_points || 0}</div>
-                <div className="text-gray-500">Points</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">{metrics.avg_velocity?.toFixed(1) || '0'}</div>
-                <div className="text-gray-500">Velocity</div>
-              </div>
-            </div>
-          )}
+      <div className="bg-white shadow-sm rounded-xl p-6 lg:p-8">
+        <div className="mb-6">
+          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900">
+            Welcome back, {user?.full_name}
+          </h1>
+          <p className="text-gray-600 mt-2 text-base">
+            {currentTeam ? `Team: ${currentTeam.name}` : 'No team selected'}
+          </p>
         </div>
+        {metrics && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 text-center transition-all hover:shadow-lg hover:scale-105">
+              <div className="text-4xl font-bold text-blue-600 mb-2">{metrics.total_sprints || 0}</div>
+              <div className="text-sm font-semibold text-gray-700">Total Sprints</div>
+            </div>
+            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 text-center transition-all hover:shadow-lg hover:scale-105">
+              <div className="text-4xl font-bold text-green-600 mb-2">{metrics.completed_points || 0}</div>
+              <div className="text-sm font-semibold text-gray-700">Points Completed</div>
+            </div>
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 text-center transition-all hover:shadow-lg hover:scale-105">
+              <div className="text-4xl font-bold text-purple-600 mb-2">{metrics.avg_velocity?.toFixed(1) || '0'}</div>
+              <div className="text-sm font-semibold text-gray-700">Avg Velocity</div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Quick Actions */}
       <QuickActions />
 
       {/* Main Dashboard Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Sprint Overview */}
-        <div className="lg:col-span-1">
-          <SprintOverview sprint={currentSprint} />
-        </div>
+        <SprintOverview sprint={currentSprint} />
 
         {/* AI Insights */}
-        <div className="lg:col-span-1">
-          <AIInsights teamId={currentTeam?.id} />
-        </div>
+        <AIInsights teamId={currentTeam?.id} />
       </div>
 
       {/* Recent Standups */}
-      <div className="grid grid-cols-1 gap-6">
-        <RecentStandups teamId={currentTeam?.id} />
-      </div>
+      <RecentStandups teamId={currentTeam?.id} />
     </div>
   );
 };

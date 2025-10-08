@@ -58,9 +58,14 @@ export const QuickActions: React.FC = () => {
   };
 
   return (
-    <div className="bg-white shadow rounded-lg p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="bg-white shadow-sm rounded-xl p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-2">
+        <h2 className="text-xl font-semibold text-gray-900">Quick Actions</h2>
+        {!currentTeam && (
+          <span className="text-sm text-gray-500">Select a team to enable actions</span>
+        )}
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {actions.map((action, index) => {
           const Icon = action.icon;
           return (
@@ -68,18 +73,24 @@ export const QuickActions: React.FC = () => {
               key={index}
               onClick={action.onClick}
               disabled={action.disabled}
-              className={`p-5 rounded-lg border-2 transition-all duration-200 text-left ${
+              className={`p-5 rounded-xl border-2 transition-all duration-200 text-left ${
                 action.disabled
                   ? 'cursor-not-allowed opacity-50'
-                  : 'cursor-pointer transform hover:scale-105 shadow-sm hover:shadow-md'
+                  : 'cursor-pointer transform hover:-translate-y-1 hover:shadow-xl active:translate-y-0'
               } ${getColorClasses(action.color, action.disabled)}`}
             >
-              <div className="flex items-center justify-between mb-3">
-                <Icon className="w-6 h-6" />
-                <div className={`w-2 h-2 rounded-full ${action.disabled ? 'bg-gray-300' : 'bg-current opacity-30'}`} />
+              <div className="flex items-start justify-between mb-3 sm:mb-4">
+                <div className={`p-2 rounded-lg ${action.disabled ? 'bg-gray-100' : 'bg-white bg-opacity-50'}`}>
+                  <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
               </div>
-              <h3 className="font-semibold text-gray-900 text-sm mb-1">{action.title}</h3>
-              <p className="text-xs text-gray-600">{action.description}</p>
+              <h3 className="font-semibold text-gray-900 text-sm sm:text-base mb-1 sm:mb-2">{action.title}</h3>
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{action.description}</p>
+              {!action.disabled && (
+                <div className="mt-4 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                  Get started →
+                </div>
+              )}
             </button>
           );
         })}
