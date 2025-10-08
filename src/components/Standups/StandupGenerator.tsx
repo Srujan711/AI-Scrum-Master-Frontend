@@ -15,11 +15,12 @@ interface StandupFormData {
 }
 
 export const StandupGenerator: React.FC = () => {
-  const { currentTeam, currentSprint } = useTeamStore();
+  const { currentTeam } = useTeamStore();
   const queryClient = useQueryClient();
   const [generatedStandup, setGeneratedStandup] = useState<StandupSummary | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<StandupFormData>({
+  const { register, handleSubmit, formState: { errors } } = useForm<StandupFormData>({
     defaultValues: {
       date: new Date().toISOString().split('T')[0],
     },
@@ -29,7 +30,15 @@ export const StandupGenerator: React.FC = () => {
     mutationFn: standupApi.generateSummary,
     onSuccess: (data) => {
       setGeneratedStandup(data);
+      setErrorMessage(null);
       queryClient.invalidateQueries({ queryKey: ['standups'] });
+    },
+    onError: (error: any) => {
+      console.error('Failed to generate standup:', error);
+      console.log('Error response:', error?.response?.data);
+      const message = error?.response?.data?.detail || error?.message || 'Failed to generate standup summary';
+      setErrorMessage(message);
+      setGeneratedStandup(null);
     },
   });
 
@@ -49,9 +58,7 @@ export const StandupGenerator: React.FC = () => {
 
     generateMutation.mutate({
       team_id: currentTeam.id,
-      sprint_id: currentSprint?.id,
       date: data.date,
-      manual_input: data.manual_input,
     });
   };
 
@@ -140,6 +147,32 @@ export const StandupGenerator: React.FC = () => {
             </button>
           </div>
         </form>
+
+        {/* Error Message */}
+        {errorMessage && (
+          <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-yellow-800">
+                  Unable to generate standup
+                </h3>
+                <div className="mt-2 text-sm text-yellow-700">
+                  <p>{errorMessage}</p>
+                  {errorMessage.includes('No standup notes') && (
+                    <p className="mt-2">
+                      To generate a standup summary, team members need to submit their standup notes first.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Generated Standup */}

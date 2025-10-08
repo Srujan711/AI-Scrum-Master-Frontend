@@ -78,9 +78,7 @@ export const authApi = {
 export const standupApi = {
   generateSummary: async (data: {
     team_id: number;
-    sprint_id?: number;
     date?: string;
-    manual_input?: Record<string, any>;
   }) => {
     const response = await api.post('/standups/generate', data);
     return response.data;
@@ -196,7 +194,13 @@ export const sprintApi = {
     team_id: number;
     status: string;
   }) => {
-    const response = await api.post('/sprints', data);
+    const response = await api.post('/sprints/create', {
+      team_id: data.team_id,
+      sprint_name: data.name,
+      start_date: data.start_date,
+      end_date: data.end_date,
+      capacity_points: data.planned_capacity,
+    });
     return response.data;
   },
 
